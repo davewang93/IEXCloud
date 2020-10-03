@@ -47,8 +47,8 @@ os.environ['IEX_API_VERSION'] = 'v1'
 key = secretkey
 
 #load SOI files and create useful vars
-tickerSOI = os.path.join(directory, 'CANBasket.csv')
-tablename = "usdcadcadbasketprice"
+tickerSOI = os.path.join(directory, 'USBasketGBP.csv')
+tablename = "gbpusdusdbasketprice"
 
 
 tickers = pd.read_csv(tickerSOI, engine='python')
@@ -76,7 +76,7 @@ def sum_price(date, tickers):
 
     for index,row in tickers.iterrows():
 
-        symbol = row['Ticker'] + "-CT"
+        symbol = row['Ticker'] 
         #print(symbol + " " + start)
         df = get_historical_data(symbol, start, token = key, close_only=True, output_format='pandas')
         #print(df['close'][0])

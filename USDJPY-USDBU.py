@@ -42,19 +42,16 @@ engine = create_engine(engine)
 #this is the iexfinance client
 #v1 is live
 #iexcloud-sandbox is sandbox
-#key setting is flip between secret key and test key
+#key setting is to flip between secret key and test key
 os.environ['IEX_API_VERSION'] = 'v1'
 key = secretkey
 
 #load SOI files and create useful vars
-tickerSOI = os.path.join(directory, 'CANBasket.csv')
-tablename = "usdcadcadbasketprice"
-
+tickerSOI = os.path.join(directory, 'USBasketJPN.csv')
+tablename = "usdjpyusdbasketprice"
 
 tickers = pd.read_csv(tickerSOI, engine='python')
 divider=  len(tickers.index)
-
-
 
 # this set of commands pulls the last date from the table and created a DF of date ranges to pass to our update function
 my_cursor = mydb.cursor()
@@ -76,7 +73,7 @@ def sum_price(date, tickers):
 
     for index,row in tickers.iterrows():
 
-        symbol = row['Ticker'] + "-CT"
+        symbol = row['Ticker']
         #print(symbol + " " + start)
         df = get_historical_data(symbol, start, token = key, close_only=True, output_format='pandas')
         #print(df['close'][0])

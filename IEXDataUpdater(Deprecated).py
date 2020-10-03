@@ -38,16 +38,17 @@ my_cursor = mydb.cursor()
 #connect to db using sqlalchemy
 engine = create_engine(engine)
 
-ticker = pd.read_csv("CANBasket.csv", engine='python')
+ticker = pd.read_csv("UKBasket.csv", engine='python')
 
 os.environ['IEX_API_VERSION'] = 'iexcloud-sandbox'
+key = testkey
 
 for index,row in ticker.iterrows():
     #create sql command
     sqlcmd = "SELECT DATE FROM " +row['Table'] + " ORDER BY DATE DESC LIMIT 1"
     #get individual values
-    symbol= row['Ticker'] + "-CT"
-    table = row['Table'].lower()
+    symbol= row['Ticker'] + "-LN"
+    #table = row['Table'].lower()
 
     my_cursor.execute(sqlcmd)
     LastRecord = my_cursor.fetchall()
@@ -56,7 +57,7 @@ for index,row in ticker.iterrows():
     end = datetime.today().strftime('%Y-%m-%d')
     print(start)
     print(end)
-    df = get_historical_data(symbol, start, end, token = testkey, close_only=True, output_format='pandas')
+    df = get_historical_data(symbol, start, end, token = key, close_only=True, output_format='pandas')
     print(df)
     '''
     table = dataseries.reset_index()
@@ -69,5 +70,5 @@ for index,row in ticker.iterrows():
     if df.size > 1:
         #print(tableID)
         #print(table)
-        df.to_sql(table,engine,if_exists='append')
+        df.to_sql('gbpusdgbpbasketprice',engine,if_exists='append')
     

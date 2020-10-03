@@ -11,8 +11,10 @@ import pyEX
 from iexfinance.stocks import get_historical_data
 import os
 
+directory = os.path.dirname(os.path.abspath(__file__))
+configfile = os.path.join(directory, 'config.ini')
 parser = ConfigParser()
-parser.read('config.ini')
+parser.read(configfile)
 
 host = parser.get('iexcloud','host')
 user = parser.get('iexcloud','user')
@@ -68,10 +70,13 @@ print(df.head())
 #v1 is live
 #iexcloud-sandbox is sandbox
 
-ticker = pd.read_csv("CANBasket.csv", engine='python')
-days = pd.read_csv("90Days.csv", engine='python')
+basketfile = os.path.join(directory, 'AUSBasket.csv')
+dateslist = os.path.join(directory, 'dateslist.csv')
+ticker = pd.read_csv(basketfile, engine='python')
+days = pd.read_csv(dateslist, engine='python')
 
 os.environ['IEX_API_VERSION'] = 'iexcloud-sandbox'
+key = testkey
 
 for index,row in ticker.iterrows():
 
@@ -87,7 +92,7 @@ for index,row in ticker.iterrows():
         yesterday = datetime.now() - timedelta(days=1)
         yesterday.strftime('%Y-%m-%d')
         '''
-        df = get_historical_data(symbol, start, token = testkey, close_only=True, output_format='pandas')
+        df = get_historical_data(symbol, start, token = key, close_only=True, output_format='pandas')
 
         if df.size > 1:
             print(table)

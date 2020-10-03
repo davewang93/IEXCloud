@@ -12,8 +12,11 @@ from iexfinance.stocks import get_historical_data
 import os
 
 #this stuff loads the keys
+directory = os.path.dirname(os.path.abspath(__file__))
+configfile = os.path.join(directory, 'config.ini')
 parser = ConfigParser()
-parser.read('config.ini')
+parser.read(configfile)
+
 host = parser.get('iexcloud','host')
 user = parser.get('iexcloud','user')
 passwd = parser.get('iexcloud','passwd')
@@ -39,16 +42,16 @@ engine = create_engine(engine)
 #this is the iexfinance client
 #v1 is live
 #iexcloud-sandbox is sandbox
+#key setting is to flip between secret key and test key
 os.environ['IEX_API_VERSION'] = 'v1'
+key = secretkey
 
 #load SOI files and create useful vars
-tickerSOI = "USBasket.csv"
-datesList = "dateslist.csv"
+tickerSOI = os.path.join(directory, 'USBasketCAD.csv')
 tablename = "usdcadusdbasketprice"
 
 
 tickers = pd.read_csv(tickerSOI, engine='python')
-days = pd.read_csv(datesList, engine='python')
 divider=  len(tickers.index)
 
 
@@ -75,7 +78,7 @@ def sum_price(date, tickers):
 
         symbol = row['Ticker']
         #print(symbol + " " + start)
-        df = get_historical_data(symbol, start, token = secretkey, close_only=True, output_format='pandas')
+        df = get_historical_data(symbol, start, token = key, close_only=True, output_format='pandas')
         #print(df['close'][0])
 
         if df.size > 1:

@@ -7,8 +7,6 @@ from sqlalchemy import create_engine
 import mysql.connector
 from datetime import datetime, timedelta
 from configparser import ConfigParser 
-import pyEX
-from iexfinance.stocks import get_historical_data
 import os
 
 #this stuff loads the keys
@@ -24,26 +22,6 @@ database = parser.get('iexcloud','database')
 
 engine = parser.get('engines','iexengine')
 
-#production key
-secretkey = parser.get('keys','secretkey')
-#sandbox key
-testkey = parser.get('keys','testkey')
-
-'''
-# Create a new DB in mySQL w/ block below
-mydb = mysql.connector.connect(
-        host = host,
-        user = user,
-        passwd = passwd,
-    )
-
-#create cursor
-cursor = mydb.cursor()
-
-#create a db
-cursor.execute("CREATE DATABASE iexcloud")
-'''
-
 #connect to specific db w/ both mysql connector and sqlalchemy. sqlalchemy for pushing and mysql for pulling
 mydb = mysql.connector.connect(
     host = host,
@@ -55,31 +33,11 @@ mydb = mysql.connector.connect(
 #connect to db using sqlalchemy
 engine = create_engine(engine)
 
-'''
-#this is the pyEX client (iexfinance alt)
-#c = pyEX.Client(api_token = secretkey, version = 'v1')
-
-c = pyEX.Client(api_token=testkey, version='sandbox')
-
-df = c.chartDF(symbol, timeframe = '1y', filter='date, symbol, Close')
-
-df.to_sql("test",engine)
-
-print(df.head())
-'''
-
-#this is the iexfinance client
-#v1 is live
-#iexcloud-sandbox is sandbox
-#need to make the switch in the environment variable too
-os.environ['IEX_API_VERSION'] = 'v1'
-key = secretkey
-
 #load SOI files and create useful vars
-tickerSOI = os.path.join(directory, 'USBasketJPN.csv')
+tickerSOI = os.path.join(directory, 'JPNBasket.csv')
 datesList = os.path.join(directory, 'dateslist.csv')
-tablename = "usdjpyusdbasketprice"
-exchange = ""
+tablename = "usdjpyjpybasketprice"
+exchange = ".T"
 
 
 tickers = pd.read_csv(tickerSOI, engine='python')
@@ -95,11 +53,14 @@ def sum_price(date, tickers):
 
     for index,row in tickers.iterrows():
         #remember to toggle exchange
-        symbol = row['Ticker'] + exchange
-        df = get_historical_data(symbol, start, token = key, close_only=True, output_format='pandas')
+        #needed to add symbol str thing for tokyo exchange (all numbers)
+        symbolstr = row['Ticker'] 
+        symbol = str(symbolstr) + exchange
+
+        df = pdr.DataReader(symbol,'yahoo',start)
         #this allows us to skip days that happen to fall on a weekend or holiday by mistake
         if df.size > 1:
-            price = df['close'][0]
+            price = df['Adj Close'][0]
             print (symbol + " " + str(price))
             basketsum = basketsum + price
 
