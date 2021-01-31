@@ -59,7 +59,7 @@ my_cursor.execute("SELECT DATE FROM " + tablename + " ORDER BY DATE DESC LIMIT 1
 LastRecord = my_cursor.fetchall()
 LastDate = LastRecord[0][0]
 #convert the str above to datetime in format below
-start = datetime.strptime(LastDate, '%m/%d/%Y') + timedelta(days=1)
+start = datetime.strptime(LastDate, '%Y-%m-%d %H:%M:%S') + timedelta(days=1)
 end = datetime.today()
 #pd.bdate_range creates the df with the date ranges we want, then the for loop converts the values to the appropraite format to match with the initializer
 datedfRAW = [d.strftime('%m/%d/%Y') for d in pd.bdate_range(start, end)]
@@ -101,7 +101,7 @@ for index,row in datedf.iterrows():
 
     if price['Price'][0] != 0:
         price.to_sql(tablename, engine, if_exists='append')
-        
+
     print(price)
 
 

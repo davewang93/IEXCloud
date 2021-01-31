@@ -47,7 +47,7 @@ my_cursor.execute("SELECT DATE FROM " + tablename + " ORDER BY DATE DESC LIMIT 1
 LastRecord = my_cursor.fetchall()
 LastDate = LastRecord[0][0]
 #convert the str above to datetime in format below
-start = datetime.strptime(LastDate, '%m/%d/%Y') + timedelta(days=1)
+start = datetime.strptime(LastDate, '%Y-%m-%d %H:%M:%S') + timedelta(days=1)
 print(start)
 end = datetime.today()
 #pd.bdate_range creates the df with the date ranges we want, then the for loop converts the values to the appropraite format to match with the initializer
