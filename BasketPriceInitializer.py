@@ -76,9 +76,9 @@ os.environ['IEX_API_VERSION'] = 'v1'
 key = secretkey
 
 #load SOI files and create useful vars
-tickerSOI = os.path.join(directory, 'USBasketJPN.csv')
+tickerSOI = os.path.join(directory, 'USBasketAUD.csv')
 datesList = os.path.join(directory, 'dateslist.csv')
-tablename = "usdjpyusdbasketprice"
+tablename = "audusdusdbasketprice"
 exchange = ""
 
 
@@ -97,6 +97,7 @@ def sum_price(date, tickers):
         #remember to toggle exchange
         symbol = row['Ticker'] + exchange
         df = get_historical_data(symbol, start, token = key, close_only=True, output_format='pandas')
+        print(df)
         #this allows us to skip days that happen to fall on a weekend or holiday by mistake
         if df.size > 1:
             price = df['close'][0]
@@ -112,9 +113,11 @@ for index,row in days.iterrows():
     date = start = row['Date']
     basketsum = sum_price(date, tickers)
     basketprice = basketsum/divider
-    price = pd.DataFrame([[date, basketprice]] , columns = ['Date', 'Price'])
+    #print(date)
+    datesql = datetime.strptime(date, '%m/%d/%Y')
+    
+    price = pd.DataFrame([[datesql, basketprice]] , columns = ['Date', 'Price'])
 
-    #this is a check that only allows dfs with data to be pushed to sql, used in conjunction with the if df.size>1 statement in the funtion
     if price['Price'][0] != 0:
         price.to_sql(tablename, engine, if_exists='append')
 

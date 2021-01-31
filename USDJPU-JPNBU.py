@@ -48,6 +48,7 @@ LastRecord = my_cursor.fetchall()
 LastDate = LastRecord[0][0]
 #convert the str above to datetime in format below
 start = datetime.strptime(LastDate, '%m/%d/%Y') + timedelta(days=1)
+print(start)
 end = datetime.today()
 #pd.bdate_range creates the df with the date ranges we want, then the for loop converts the values to the appropraite format to match with the initializer
 datedfRAW = [d.strftime('%m/%d/%Y') for d in pd.bdate_range(start, end)]
@@ -81,9 +82,12 @@ for index,row in datedf.iterrows():
     date = start = row['Date']
     basketsum = sum_price(date, tickers)
     basketprice = basketsum/divider
-    price = pd.DataFrame([[date, basketprice]] , columns = ['Date', 'Price'])
+     
+    #print(date)
+    datesql = datetime.strptime(date, '%m/%d/%Y')
+    
+    price = pd.DataFrame([[datesql, basketprice]] , columns = ['Date', 'Price'])
 
-    #this is a check that only allows dfs with data to be pushed to sql, used in conjunction with the if df.size>1 statement in the funtion
     if price['Price'][0] != 0:
         price.to_sql(tablename, engine, if_exists='append')
 

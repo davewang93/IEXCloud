@@ -94,11 +94,14 @@ for index,row in datedf.iterrows():
 
     basketprice = basketsum/divider
     
-    price = pd.DataFrame([[date, basketprice]] , columns = ['Date', 'Price'])
+    #print(date)
+    datesql = datetime.strptime(date, '%m/%d/%Y')
+    
+    price = pd.DataFrame([[datesql, basketprice]] , columns = ['Date', 'Price'])
 
     if price['Price'][0] != 0:
         price.to_sql(tablename, engine, if_exists='append')
-
+        
     print(price)
 
 

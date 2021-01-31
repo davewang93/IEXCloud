@@ -46,13 +46,18 @@ my_cursor = mydb.cursor()
 my_cursor.execute("SELECT DATE FROM " + tablename + " ORDER BY DATE DESC LIMIT 1")
 LastRecord = my_cursor.fetchall()
 LastDate = LastRecord[0][0]
+print(type(LastDate))
 #convert the str above to datetime in format below
-start = datetime.strptime(LastDate, '%m/%d/%Y') + timedelta(days=1)
+start = datetime.strptime(LastDate, '%Y-%m-%d %H:%M:%S') + timedelta(days=1)
+print(start)
 end = datetime.today()
+print(end)
 #pd.bdate_range creates the df with the date ranges we want, then the for loop converts the values to the appropraite format to match with the initializer
 datedfRAW = [d.strftime('%m/%d/%Y') for d in pd.bdate_range(start, end)]
+#print(datedfRAW)
 #creates final df that will be passed to function
 datedf = pd.DataFrame(datedfRAW,columns=['Date'])
+#print(datedf)
 
 #this function creates the sum value of all the prices for a specific date for all the securities in the basket
 #returns this sum value so it can then be divided to find the average
@@ -80,7 +85,11 @@ for index,row in datedf.iterrows():
     date = start = row['Date']
     basketsum = sum_price(date, tickers)
     basketprice = basketsum/divider
-    price = pd.DataFrame([[date, basketprice]] , columns = ['Date', 'Price'])
+    #ADDITIONTEST
+    print(date)
+    datesql = datetime.strptime(date, '%m/%d/%Y')
+
+    price = pd.DataFrame([[datesql, basketprice]] , columns = ['Date', 'Price'])
 
     #this is a check that only allows dfs with data to be pushed to sql, used in conjunction with the if df.size>1 statement in the funtion
     if price['Price'][0] != 0:
