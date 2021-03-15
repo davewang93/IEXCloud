@@ -13,3 +13,6 @@ AUSBasket.csv
 LatestDates.csv
 USBasketGBP.csv
 UKBasket.csv
+DailyPricesListNewAdd.csv
+DailyPricesList.csv
+.gitignore
