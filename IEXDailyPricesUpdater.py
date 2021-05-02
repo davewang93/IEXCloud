@@ -69,10 +69,11 @@ print(df.head())
 '''
 
 #this is the iexfinance client
-#v1 is live
+#iexcloud-v1 is live
 #iexcloud-sandbox is sandbox
+#secretkey = live testkey = sandbox
 #need to make the switch in the environment variable too
-os.environ['IEX_API_VERSION'] = 'v1'
+os.environ['IEX_API_VERSION'] = 'iexcloud-v1'
 key = secretkey
 
 #load SOI files and create useful vars
@@ -93,13 +94,18 @@ for index,row in tickers.iterrows():
     LastRecord = my_cursor.fetchall()
     LastDate = LastRecord[0][0]
     #convert the str above to datetime in format below
+    #need to add a condition to handle holidays and fridays
+    #use days = 3 for friday - skip additional day for holiday
     start = LastDate + timedelta(days=1)
-    end = datetime.today()
-    df = get_historical_data(symbol, start, end, token = key, close_only=True, output_format='pandas')
+    #end = datetime.today()
+    df = get_historical_data(symbol, start, token = key, close_only=True, output_format='pandas')
+    df.index.names = ['date']
 
+    print(df.size)
     print(df)
 
-    df.to_sql(tablename, engine, if_exists='append')
+    if df.size > 1:
+       df.to_sql(tablename, engine, if_exists='append')
 
 
 
