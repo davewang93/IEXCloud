@@ -16,3 +16,11 @@ UKBasket.csv
 DailyPricesListNewAdd.csv
 DailyPricesList.csv
 .gitignore
+Deprecated/
+iexcryptoprices.bat
+data.json
+cryptouniverse.csv
+cryptotest.csv
+CorrelationMaster.xlsx
+iexsymbols.csv
+iexfinance-master.zip
