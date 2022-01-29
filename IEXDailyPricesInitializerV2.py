@@ -2,12 +2,10 @@ import pandas_datareader as pdr
 import quandl as ql
 import pandas as pd
 import numpy as np
-import sqlalchemy
 from sqlalchemy import create_engine
 import mysql.connector
 from datetime import datetime, timedelta
 from configparser import ConfigParser 
-import pyEX
 from iexfinance.stocks import get_historical_data
 import os
 
@@ -73,8 +71,8 @@ print(df.head())
 #iexcloud-sandbox is sandbox
 #secretkey = live testkey = sandbox
 #need to make the switch in the environment variable too
-os.environ['IEX_API_VERSION'] = 'iexcloud-v1'
-key = secretkey   
+os.environ['IEX_API_VERSION'] = 'iexcloud-sandbox'
+key = testkey   
 
 #load SOI files and create useful vars
 #test file 'DailyPricesListNewAdd.csv'

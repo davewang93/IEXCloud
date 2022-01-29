@@ -95,7 +95,7 @@ for index,row in tickers.iterrows():
     #print(tickerheader)
     df.rename(columns={'price':tickerheader}, inplace = True)
     df = df.drop('symbol',1)
-    df.reset_index(drop=True, inplace=True)
+    df.reset_index(drop=True, inplace=True) 
     #df = df[['date',tickerheader]]
     #print(df)
     maintable = pd.concat([df, maintable],axis = 1)

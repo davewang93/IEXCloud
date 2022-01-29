@@ -1,3 +1,4 @@
+from numpy.lib.npyio import mafromtxt
 import pandas_datareader as pdr
 import quandl as ql
 import pandas as pd
@@ -55,6 +56,9 @@ mydb = mysql.connector.connect(
 #connect to db using sqlalchemy
 engine = create_engine(engine)
 
+my_cursor = mydb.cursor()
+
+
 '''
 #this is the pyEX client (iexfinance alt)
 #c = pyEX.Client(api_token = secretkey, version = 'v1')
@@ -110,6 +114,13 @@ for index,row in tickers.iterrows():
     print(maintable)
     maintable.index.names = ['date'] 
 
+ 
+#print(len(maintable.index))    
+if len(maintable.index) > 1:
+    maintable = maintable.drop(maintable.tail(1).index)
+
+
+print(maintable)
 maintable.to_sql('financialsectorsprices', engine, if_exists='append')
 
 
